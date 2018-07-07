@@ -126,13 +126,13 @@ func main() {
 				log.Fatal(err)
 			}
 			signer := auth.NewEd25519Signer(privKey)
-			var result types.ChallengeResultResponse
+			var result types.ChallengeResponse
 			params := &types.ChallengeRequest{
 				Player: &types.User{Username: userName},
 				MapId:  mapId,
 			}
 			resp, err := contract.Call("Challenge", params, signer, &result)
-			fmt.Println(resp)
+			fmt.Printf("response: %v", resp)
 			fmt.Println(result)
 			return nil
 		},
