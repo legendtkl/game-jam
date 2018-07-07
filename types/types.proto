@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+message User {
+    string username = 1;
+    int64 balance = 2;
+}
+
+message Point {
+    int32 x_axis = 1;
+    int32 y_axis = 2;
+}
+
+message GameMap {
+    int32 version = 1;
+    int32 mapid = 2;
+    User creator = 3;
+    bytes graph = 4;
+    int64 reward = 5;
+    int64 fee = 6;
+    int32 state = 7
+    repeated Point fogs = 8;
+}
+
+message MapList {
+    repeated GameMap maps;
+}
+
+message CreateGameMapRequest {
+    User creator = 1;
+    bytes graph = 2;
+    int64 reward = 3;
+    int64 fee = 4;
+}
+
+message CreateGameMapResponse {
+    int code = 1;
+    string message = 2;
+    optional GameMap map = 3;
+}
+
+message Challenge{
+    int64 chanllenge_id = 1;
+    User player = 2;
+    int32 mapid;
+}
+
+message ChallengeRequest {
+    User player = 1;
+    int32 map_id = 2;
+}
+
+message ChallengeResponse {
+    int code = 1;
+    string message = 2;
+    int64 chanllenge_id;
+}
+
+message ListGameMapRequest {
+}
+
+message ListGameMapResponse {
+    MapList map_list;
+}
+
+message UploadChallengeResultRequest {
+    bool result;
+    User player;
+    int64 chanllenge_id;
+    Point last_point;
+}
