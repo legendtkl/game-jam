@@ -2,7 +2,7 @@ package main
 
 import (
 	"math/rand"
-
+	"runtime/debug"
 
 	"github.com/legendtkl/game-jam/types"
 	"github.com/google/uuid"
@@ -11,6 +11,7 @@ import (
 	contract "github.com/loomnetwork/go-loom/plugin/contractpb"
 	"github.com/pkg/errors"
 	//"strconv"
+	"fmt"
 )
 
 const (
@@ -141,6 +142,7 @@ func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*typ
 
 	challenge.MapId = tx.MapId
 	challenge.Player = tx.Player
+	ctx.Set(e.ChallengeKey(challenge), &challenge)
 
 	var gameMap types.GameMap
 	gameMap.MapId = tx.MapId
@@ -157,6 +159,7 @@ func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*typ
 	}
 
 	player.Balance -= gameMap.Fee
+	ctx.Set(e.UserKey(player), &player)
 
 	response.Code = 0
 	response.ChanllengeId = challenge.ChanllengeId
@@ -166,6 +169,12 @@ func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*typ
 }
 
 func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultRequest) (*types.ChallengeResultResponse, error) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			fmt.Println(string(debug.Stack()))
+		}
+	}()
 	var challenge types.Challenge
 	challenge.ChanllengeId = tx.ChanllengeId
 	ctx.Get(e.ChallengeKey(challenge), &challenge)
