@@ -17,12 +17,12 @@ message GameMap {
     bytes graph = 4;
     int64 reward = 5;
     int64 fee = 6;
-    int32 state = 7
+    int32 state = 7;
     repeated Point fogs = 8;
 }
 
 message MapList {
-    repeated GameMap maps;
+    repeated GameMap maps = 1;
 }
 
 message CreateGameMapRequest {
@@ -33,15 +33,15 @@ message CreateGameMapRequest {
 }
 
 message CreateGameMapResponse {
-    int code = 1;
+    int32 code = 1;
     string message = 2;
-    optional GameMap map = 3;
+    GameMap map = 3;
 }
 
 message Challenge{
     int64 chanllenge_id = 1;
     User player = 2;
-    int32 mapid;
+    int32 mapid = 3;
 }
 
 message ChallengeRequest {
@@ -50,21 +50,21 @@ message ChallengeRequest {
 }
 
 message ChallengeResponse {
-    int code = 1;
+    int32 code = 1;
     string message = 2;
-    int64 chanllenge_id;
+    int64 chanllenge_id = 3;
 }
 
 message ListGameMapRequest {
 }
 
 message ListGameMapResponse {
-    MapList map_list;
+    MapList map_list = 1;
 }
 
 message UploadChallengeResultRequest {
-    bool result;
-    User player;
-    int64 chanllenge_id;
-    Point last_point;
+    bool result = 1;
+    User player = 2;
+    int64 chanllenge_id = 3;
+    Point last_point = 4;
 }
