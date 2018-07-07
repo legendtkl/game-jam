@@ -9,7 +9,6 @@ import (
 	"github.com/loomnetwork/go-loom/auth"
 	"github.com/loomnetwork/go-loom/client"
 	"github.com/spf13/cobra"
-	"github.com/void-main/loomdice-core/txmsg"
 	"golang.org/x/crypto/ed25519"
 	"github.com/legendtkl/game-jam/types"
 )
@@ -22,11 +21,7 @@ func getPrivKey(privKeyFile string) ([]byte, error) {
 }
 
 func main() {
-	var privFile, user string
-	var betBig bool
-	var betAmount int32
-	//var value int
-	//var value int
+	var privFile string
 
 	rpcClient := client.NewDAppChainRPCClient("default", writeURI, readURI)
 
@@ -36,35 +31,20 @@ func main() {
 	}
 	contract := client.NewContract(rpcClient, contractAddr)
 
-
-	/*
-	Creator              *User    `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Graph                []byte   `protobuf:"bytes,2,opt,name=graph,proto3" json:"graph,omitempty"`
-	Reward               int64    `protobuf:"varint,3,opt,name=reward,proto3" json:"reward,omitempty"`
-	Fee                  int64
-	*/
-
-	var creator string
-	var graph string
-	var reward int64
-	var fee	int64
-	//CreateGameMap
-	createMapCmd := &cobra.Command{
-		Use:   "create-acct",
-		Short: "send a transaction",
+	var userName string
+	createUser := &cobra.Command{
+		Use:   "create-user",
+		Short: "Create User",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			privKey, err := getPrivKey(privFile)
 			if err != nil {
 				log.Fatal(err)
 			}
-			params := &types.CreateGameMapRequest{
-				Creator: &types.User{creator, 1000},
-				Graph: 	[]byte(graph),
-				Reward: reward,
-				Fee:	fee,
+			params := &types.CreateUserRequest{
+				Username:	userName,
 			}
 			signer := auth.NewEd25519Signer(privKey)
-			resp, err := contract.Call("CreateGameMap", params, signer, nil)
+			resp, err := contract.Call("CreateUser", params, signer, nil)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -73,98 +53,111 @@ func main() {
 			return nil
 		},
 	}
-	createMapCmd.Flags().StringVarP(&creator, "creator", "k", "", "private key file")
-	createMapCmd.Flags().StringVarP(&graph, "graph", "k", "", "private key file")
-	createMapCmd.Flags().Int64VarP(&reward, "reward", "v", 0, "reward")
-	createMapCmd.Flags().Int64VarP(&fee, "fee", "v", 0, "fee")
+	createUser.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
+	createUser.Flags().StringVarP(&userName, "username", "u", "", "user name")
 
 
-	getStateCmd := &cobra.Command{
-		Use:   "get",
-		Short: "get state",
+	var creator string
+	var graph string
+	var reward int64
+	var fee	int64
+	//CreateGameMap
+	createMapCmd := &cobra.Command{
+		Use:   "create-map",
+		Short: "send a transaction",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var result txmsg.LDStateQueryResult
 			privKey, err := getPrivKey(privFile)
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			params := &txmsg.LDStateQueryParams{
-				Owner: user,
+			params := &types.CreateGameMapRequest{
+				Creator: &types.User{creator, 1000},
+				Graph: 	nil,
+				Reward: reward,
+				Fee:	fee,
 			}
 			signer := auth.NewEd25519Signer(privKey)
-			callerAddr := loom.Address{
-				ChainID: rpcClient.GetChainID(),
-				Local:   loom.LocalAddressFromPublicKey(signer.PublicKey()),
+			resp, err := contract.Call("CreateMap", params, signer, nil)
+			if err != nil {
+				log.Fatal(err)
 			}
-			if _, err := contract.StaticCall("GetState", params, callerAddr, &result); err != nil {
-				return err
-			}
-			fmt.Println(string(result.State))
+			fmt.Println(resp)
+
 			return nil
 		},
 	}
-	getStateCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
-	getStateCmd.Flags().StringVarP(&user, "user", "u", "loom", "user")
+	createMapCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
+	createMapCmd.Flags().StringVarP(&creator, "creator", "c", "", "private key file")
+	createMapCmd.Flags().StringVarP(&graph, "graph", "g", "", "private key file")
+	createMapCmd.Flags().Int64VarP(&reward, "reward", "r", 0, "reward")
+	createMapCmd.Flags().Int64VarP(&fee, "fee", "f", 0, "fee")
 
-	rollCmd := &cobra.Command{
-		Use:   "roll",
-		Short: "roll the dice",
+
+	listGameMapCmd := &cobra.Command{
+		Use:   "list-game-map",
+		Short: "list game map",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var result txmsg.LDRollQueryResult
 			privKey, err := getPrivKey(privFile)
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			params := &txmsg.LDRollQueryParams{
-				Owner:  user,
-				BetBig: betBig,
-				Amount: betAmount,
-			}
-
-			fmt.Println(params)
 			signer := auth.NewEd25519Signer(privKey)
-			if _, err := contract.Call("Roll", params, signer, &result); err != nil {
-				return err
-			}
-			fmt.Printf("Point: %v, Win: %v, New amount: %v\n", result.Point, result.Win, result.Amount)
+			params := &types.ListGameMapRequest{}
+			resp, err := contract.Call("ListGameMap", params, signer, nil)
+			fmt.Println(resp)
 			return nil
 		},
 	}
+	listGameMapCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
 
-	rollCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
-	rollCmd.Flags().StringVarP(&user, "user", "u", "loom", "user")
-	rollCmd.Flags().BoolVarP(&betBig, "big", "b", true, "bet big or not")
-	rollCmd.Flags().Int32VarP(&betAmount, "amount", "a", 0, "bet amount")
-
-	getChipCmd := &cobra.Command{
-		Use:   "get-chip",
-		Short: "get chip amount",
+	var mapId string
+	challengeCmd := &cobra.Command{
+		Use:   "challenge",
+		Short: "challenge the game",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var result txmsg.LDChipQueryResult
 			privKey, err := getPrivKey(privFile)
 			if err != nil {
 				log.Fatal(err)
 			}
-
-			params := &txmsg.LDChipQueryParams{
-				Owner: user,
-			}
 			signer := auth.NewEd25519Signer(privKey)
-			callerAddr := loom.Address{
-				ChainID: rpcClient.GetChainID(),
-				Local:   loom.LocalAddressFromPublicKey(signer.PublicKey()),
+			params := &types.ChallengeRequest{
+				Player: &types.User{Username: userName},
+				MapId:  mapId,
 			}
-			if _, err := contract.StaticCall("GetChipCount", params, callerAddr, &result); err != nil {
-				return err
-			}
-			fmt.Println(result.Amount)
+			resp, err := contract.Call("Challenge", params, signer, nil)
+			fmt.Println(resp)
 			return nil
 		},
 	}
-	getChipCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
-	getChipCmd.Flags().StringVarP(&user, "user", "u", "loom", "user")
+	challengeCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
+	challengeCmd.Flags().StringVarP(&userName, "username", "u", "loom", "user")
+	challengeCmd.Flags().StringVarP(&mapId, "mapid", "m", "loom", "user")
+
+	var challengeId string
+	var result bool
+	uploadChallengeCmd := &cobra.Command{
+		Use:   "upload-challenge",
+		Short: "upload challenge",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			privKey, err := getPrivKey(privFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+			signer := auth.NewEd25519Signer(privKey)
+			params := &types.ChallengeResultRequest{
+				Player: &types.User{Username: userName},
+				ChanllengeId: challengeId,
+				Result: result,
+			}
+			resp, err := contract.Call("Challenge", params, signer, nil)
+			fmt.Println(resp)
+			return nil
+		},
+	}
+	uploadChallengeCmd.Flags().StringVarP(&privFile, "key", "k", "", "private key file")
+	uploadChallengeCmd.Flags().StringVarP(&userName, "username", "u", "", "private key file")
+	uploadChallengeCmd.Flags().BoolVarP(&result, "result", "r", false, "")
+	uploadChallengeCmd.Flags().StringVarP(&challengeId, "challengeid", "c", "", "")
 
 	keygenCmd := &cobra.Command{
 		Use:   "genkey",
@@ -188,9 +181,10 @@ func main() {
 		Short: "LoomDice cli tool",
 	}
 	rootCmd.AddCommand(keygenCmd)
-	rootCmd.AddCommand(createAccCmd)
-	rootCmd.AddCommand(getStateCmd)
-	rootCmd.AddCommand(rollCmd)
-	rootCmd.AddCommand(getChipCmd)
+	rootCmd.AddCommand(createUser)
+	rootCmd.AddCommand(createMapCmd)
+	rootCmd.AddCommand(listGameMapCmd)
+	rootCmd.AddCommand(challengeCmd)
+	rootCmd.AddCommand(uploadChallengeCmd)
 	rootCmd.Execute()
 }
