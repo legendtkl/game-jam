@@ -62,6 +62,7 @@ func (e* Game) CreateUser(ctx contract.Context, tx *types.CreateUserRequest) (*t
 		return &response, errors.New(response.Message)
 	}
 	user.Username = tx.Username
+	user.Balance = 100
 	ctx.Set(e.UserKey(user), &user)
 	response.User = &user
 	return &response, nil
