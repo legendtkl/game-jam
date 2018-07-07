@@ -40,15 +40,17 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			var result types.CreateUserResponse
 			params := &types.CreateUserRequest{
 				Username:	userName,
 			}
 			signer := auth.NewEd25519Signer(privKey)
-			resp, err := contract.Call("CreateUser", params, signer, nil)
+			resp, err := contract.Call("CreateUser", params, signer, &result)
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Println(resp)
+			fmt.Println(result)
 
 			return nil
 		},
@@ -70,6 +72,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			var result types.CreateGameMapResponse
 			params := &types.CreateGameMapRequest{
 				Creator: &types.User{creator, 1000},
 				Graph: 	nil,
@@ -77,11 +80,12 @@ func main() {
 				Fee:	fee,
 			}
 			signer := auth.NewEd25519Signer(privKey)
-			resp, err := contract.Call("CreateMap", params, signer, nil)
+			resp, err := contract.Call("CreateMap", params, signer, &result)
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Println(resp)
+			fmt.Println(result)
 
 			return nil
 		},
@@ -102,9 +106,11 @@ func main() {
 				log.Fatal(err)
 			}
 			signer := auth.NewEd25519Signer(privKey)
+			var result types.ListGameMapResponse
 			params := &types.ListGameMapRequest{}
-			resp, err := contract.Call("ListGameMap", params, signer, nil)
+			resp, err := contract.Call("ListGameMap", params, signer, &result)
 			fmt.Println(resp)
+			fmt.Println(result)
 			return nil
 		},
 	}
@@ -120,12 +126,14 @@ func main() {
 				log.Fatal(err)
 			}
 			signer := auth.NewEd25519Signer(privKey)
+			var result types.ChallengeResultResponse
 			params := &types.ChallengeRequest{
 				Player: &types.User{Username: userName},
 				MapId:  mapId,
 			}
-			resp, err := contract.Call("Challenge", params, signer, nil)
+			resp, err := contract.Call("Challenge", params, signer, &result)
 			fmt.Println(resp)
+			fmt.Println(result)
 			return nil
 		},
 	}
@@ -144,13 +152,15 @@ func main() {
 				log.Fatal(err)
 			}
 			signer := auth.NewEd25519Signer(privKey)
+			var result1 types.ChallengeResultResponse
 			params := &types.ChallengeResultRequest{
 				Player: &types.User{Username: userName},
 				ChanllengeId: challengeId,
 				Result: result,
 			}
-			resp, err := contract.Call("Challenge", params, signer, nil)
+			resp, err := contract.Call("Challenge", params, signer, &result1)
 			fmt.Println(resp)
+			fmt.Println(result1)
 			return nil
 		},
 	}
