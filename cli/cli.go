@@ -57,15 +57,11 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			msg := &txmsg.LDCreateAccountTx{
-				Owner: user,
-			}
 			params := &types.CreateGameMapRequest{
 				Creator: &types.User{creator, 1000},
 				Graph: 	[]byte(graph),
 				Reward: reward,
 				Fee:	fee,
-
 			}
 			signer := auth.NewEd25519Signer(privKey)
 			resp, err := contract.Call("CreateGameMap", params, signer, nil)
@@ -79,7 +75,9 @@ func main() {
 	}
 	createMapCmd.Flags().StringVarP(&creator, "creator", "k", "", "private key file")
 	createMapCmd.Flags().StringVarP(&graph, "graph", "k", "", "private key file")
-	//createAccCmd.Flags().StringVarP(&user, "user", "u", "", "user name")
+	createMapCmd.Flags().Int64VarP(&reward, "reward", "v", 0, "reward")
+	createMapCmd.Flags().Int64VarP(&fee, "fee", "v", 0, "fee")
+
 
 	getStateCmd := &cobra.Command{
 		Use:   "get",

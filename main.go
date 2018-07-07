@@ -12,7 +12,7 @@ import (
 	"github.com/loomnetwork/go-loom/plugin"
 	contract "github.com/loomnetwork/go-loom/plugin/contractpb"
 	"github.com/pkg/errors"
-	"strconv"
+	//"strconv"
 )
 
 func main() {
