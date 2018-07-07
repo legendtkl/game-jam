@@ -16,8 +16,19 @@ message GameMap {
     bytes graph = 3;
     int64 reward = 4;
     int64 fee = 5;
-    int32 state = 6;
-    repeated Point fogs = 7;
+    int32 state = 6; // 1 unsolved 2 solved
+    User solver = 7;
+    repeated Point fogs = 8;
+}
+
+message CreateUserRequest {
+    string username;
+}
+
+message CreateUserResponse {
+    int32 code;
+    string message;
+    User user;
 }
 
 message CreateGameMapRequest {
