@@ -60,7 +60,7 @@ func (e* Game) CreateUser(ctx contract.Context, tx *types.CreateUserRequest) (*t
 		return &response, errors.New(response.Message)
 	}
 	user.Username = tx.Username
-	ctx.Set(e.UserKey(user), user)
+	ctx.Set(e.UserKey(user), &user)
 	response.User = &user
 	return &response, nil
 }
@@ -94,5 +94,6 @@ func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (
 	response.Map = &gameMap
 	return &response, nil
 }
+
 
 var Contract plugin.Contract = contract.MakePluginContract(&Game{})
