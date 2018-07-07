@@ -62,6 +62,11 @@ func (e* Game) CreateUser(ctx contract.Context, tx *types.CreateUserRequest) (*t
 		return &response, errors.New(response.Message)
 	}
 	user.Username = tx.Username
+	if ctx.Has(e.UserKey(user)) {
+		response.Code = 1001
+		response.Message = "username already exist"
+		return &response, errors.New(response.Message)
+	}
 	user.Balance = 100
 	ctx.Set(e.UserKey(user), &user)
 	response.User = &user
@@ -116,20 +121,26 @@ func (e *Game) ListGameMap(ctx contract.Context, tx *types.ListGameMapRequest) (
 
 func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*types.ChallengeResponse, error) {
 	var challenge types.Challenge
+	var response types.ChallengeResponse
+
 	for i := 0; i < 3; i = i+1 {
 		challenge.ChanllengeId = uuid.New().String()
 		if !ctx.Has(e.ChallengeKey(challenge)) {
 			break
 		}
 	}
+	if ctx.Has(e.ChallengeKey(challenge)) {
+		response.Code = 3000
+		response.Message = "failed to generate uuid"
+		return &response, errors.New(response.Message)
+	}
+
 	challenge.MapId = tx.MapId
 	challenge.Player = tx.Player
 
 	var gameMap types.GameMap
 	gameMap.MapId = tx.MapId
 	ctx.Get(e.MapKey(gameMap), &gameMap)
-
-	var response types.ChallengeResponse
 
 	var player types.User
 	player.Username = tx.Player.Username
