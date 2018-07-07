@@ -158,18 +158,31 @@ func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultReq
 	gameMap.MapId = challenge.MapId
 	ctx.Get(e.MapKey(gameMap), &gameMap)
 
+	var player types.User
+	player.Username = tx.Player.Username
+	ctx.Get(e.UserKey(player), &player)
+
 	var response types.ChallengeResultResponse
 	if gameMap.State == 2 {
-
 		response.Code = 3002
 		response.Message = "The Map has been Challenged Successful. You CHEAT ??"
 		return &response, errors.New(response.Message)
 	}
+
 	if (tx.Result == true) {
+		//改 map 状态
+		gameMap.State = 2
+		gameMap.Solver = &player
+		ctx.Set(e.MapKey(gameMap), &gameMap)
 
+		//加钱
+		player.Balance += gameMap.Reward
+		ctx.Set(e.UserKey(player), &player)
 	}
-
-	return nil
+	response.Code = 0
+	response.Player = &player
+	response.Message = "OK"
+	return &response, nil
 }
 
 var Contract plugin.Contract = contract.MakePluginContract(&Game{})
