@@ -73,9 +73,13 @@ func main() {
 				log.Fatal(err)
 			}
 			var result types.CreateGameMapResponse
+			x1 := types.Pixel{nil, 12, 34}
+			x2 := types.Pixel{nil, 12, 34}
+			x3 := types.Pixel{nil, 12, 34}
+
 			params := &types.CreateGameMapRequest{
 				Creator: &types.User{creator, 1000},
-				Graph: 	nil,
+				Graph: 	[]*types.Pixel{&x1, &x2, &x3},
 				Reward: reward,
 				Fee:	fee,
 			}
