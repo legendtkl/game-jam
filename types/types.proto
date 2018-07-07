@@ -68,6 +68,7 @@ message ChallengeResponse {
 }
 
 message ListGameMapRequest {
+    string placeholder = 1;
 }
 
 message MapList {
