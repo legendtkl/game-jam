@@ -11,18 +11,13 @@ message Point {
 }
 
 message GameMap {
-    int32 version = 1;
-    int32 mapid = 2;
-    User creator = 3;
-    bytes graph = 4;
-    int64 reward = 5;
-    int64 fee = 6;
-    int32 state = 7;
-    repeated Point fogs = 8;
-}
-
-message MapList {
-    repeated GameMap maps = 1;
+    string map_id = 1;
+    User creator = 2;
+    bytes graph = 3;
+    int64 reward = 4;
+    int64 fee = 5;
+    int32 state = 6;
+    repeated Point fogs = 7;
 }
 
 message CreateGameMapRequest {
@@ -39,32 +34,32 @@ message CreateGameMapResponse {
 }
 
 message Challenge{
-    int64 chanllenge_id = 1;
+    string chanllenge_id = 1;
     User player = 2;
-    int32 mapid = 3;
+    string map_id = 3;
 }
 
 message ChallengeRequest {
     User player = 1;
-    int32 map_id = 2;
+    string map_id = 2;
 }
 
 message ChallengeResponse {
     int32 code = 1;
     string message = 2;
-    int64 chanllenge_id = 3;
+    string chanllenge_id = 3;
 }
 
 message ListGameMapRequest {
 }
 
 message ListGameMapResponse {
-    MapList map_list = 1;
+    repeated GameMap maps = 1;
 }
 
 message UploadChallengeResultRequest {
     bool result = 1;
     User player = 2;
-    int64 chanllenge_id = 3;
+    string chanllenge_id = 3;
     Point last_point = 4;
 }
