@@ -83,7 +83,11 @@ func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (
 		response.Message = "failed to generate uuid"
 		return &response, errors.New(response.Message)
 	}
-	gameMap.Creator = tx.Creator
+	var creator types.User
+	creator.Username = tx.Creator.Username
+	ctx.Get(e.UserKey(creator), &creator)
+
+	gameMap.Creator = &creator
 	gameMap.Graph = tx.Graph
 	gameMap.Fee = tx.Fee
 	gameMap.Reward = tx.Reward
