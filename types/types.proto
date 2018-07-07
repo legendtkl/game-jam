@@ -39,7 +39,7 @@ message CreateUserResponse {
 
 message CreateGameMapRequest {
     User creator = 1;
-    bytes graph = 2;
+    repeated Pixel graph = 2;
     int64 reward = 3;
     int64 fee = 4;
 }
