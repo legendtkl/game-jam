@@ -30,7 +30,7 @@ func (m *User) Reset()         { *m = User{} }
 func (m *User) String() string { return proto.CompactTextString(m) }
 func (*User) ProtoMessage()    {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{0}
+	return fileDescriptor_types_420548650419de07, []int{0}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_User.Unmarshal(m, b)
@@ -76,7 +76,7 @@ func (m *Point) Reset()         { *m = Point{} }
 func (m *Point) String() string { return proto.CompactTextString(m) }
 func (*Point) ProtoMessage()    {}
 func (*Point) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{1}
+	return fileDescriptor_types_420548650419de07, []int{1}
 }
 func (m *Point) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Point.Unmarshal(m, b)
@@ -111,14 +111,13 @@ func (m *Point) GetYAxis() int32 {
 }
 
 type GameMap struct {
-	Version              int32    `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty"`
-	Mapid                int32    `protobuf:"varint,2,opt,name=mapid,proto3" json:"mapid,omitempty"`
-	Creator              *User    `protobuf:"bytes,3,opt,name=creator,proto3" json:"creator,omitempty"`
-	Graph                []byte   `protobuf:"bytes,4,opt,name=graph,proto3" json:"graph,omitempty"`
-	Reward               int64    `protobuf:"varint,5,opt,name=reward,proto3" json:"reward,omitempty"`
-	Fee                  int64    `protobuf:"varint,6,opt,name=fee,proto3" json:"fee,omitempty"`
-	State                int32    `protobuf:"varint,7,opt,name=state,proto3" json:"state,omitempty"`
-	Fogs                 []*Point `protobuf:"bytes,8,rep,name=fogs,proto3" json:"fogs,omitempty"`
+	MapId                string   `protobuf:"bytes,1,opt,name=map_id,json=mapId,proto3" json:"map_id,omitempty"`
+	Creator              *User    `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	Graph                []byte   `protobuf:"bytes,3,opt,name=graph,proto3" json:"graph,omitempty"`
+	Reward               int64    `protobuf:"varint,4,opt,name=reward,proto3" json:"reward,omitempty"`
+	Fee                  int64    `protobuf:"varint,5,opt,name=fee,proto3" json:"fee,omitempty"`
+	State                int32    `protobuf:"varint,6,opt,name=state,proto3" json:"state,omitempty"`
+	Fogs                 []*Point `protobuf:"bytes,7,rep,name=fogs,proto3" json:"fogs,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -128,7 +127,7 @@ func (m *GameMap) Reset()         { *m = GameMap{} }
 func (m *GameMap) String() string { return proto.CompactTextString(m) }
 func (*GameMap) ProtoMessage()    {}
 func (*GameMap) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{2}
+	return fileDescriptor_types_420548650419de07, []int{2}
 }
 func (m *GameMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GameMap.Unmarshal(m, b)
@@ -148,18 +147,11 @@ func (m *GameMap) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GameMap proto.InternalMessageInfo
 
-func (m *GameMap) GetVersion() int32 {
+func (m *GameMap) GetMapId() string {
 	if m != nil {
-		return m.Version
+		return m.MapId
 	}
-	return 0
-}
-
-func (m *GameMap) GetMapid() int32 {
-	if m != nil {
-		return m.Mapid
-	}
-	return 0
+	return ""
 }
 
 func (m *GameMap) GetCreator() *User {
@@ -204,44 +196,6 @@ func (m *GameMap) GetFogs() []*Point {
 	return nil
 }
 
-type MapList struct {
-	Maps                 []*GameMap `protobuf:"bytes,1,rep,name=maps,proto3" json:"maps,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
-}
-
-func (m *MapList) Reset()         { *m = MapList{} }
-func (m *MapList) String() string { return proto.CompactTextString(m) }
-func (*MapList) ProtoMessage()    {}
-func (*MapList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{3}
-}
-func (m *MapList) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MapList.Unmarshal(m, b)
-}
-func (m *MapList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MapList.Marshal(b, m, deterministic)
-}
-func (dst *MapList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MapList.Merge(dst, src)
-}
-func (m *MapList) XXX_Size() int {
-	return xxx_messageInfo_MapList.Size(m)
-}
-func (m *MapList) XXX_DiscardUnknown() {
-	xxx_messageInfo_MapList.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MapList proto.InternalMessageInfo
-
-func (m *MapList) GetMaps() []*GameMap {
-	if m != nil {
-		return m.Maps
-	}
-	return nil
-}
-
 type CreateGameMapRequest struct {
 	Creator              *User    `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Graph                []byte   `protobuf:"bytes,2,opt,name=graph,proto3" json:"graph,omitempty"`
@@ -256,7 +210,7 @@ func (m *CreateGameMapRequest) Reset()         { *m = CreateGameMapRequest{} }
 func (m *CreateGameMapRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateGameMapRequest) ProtoMessage()    {}
 func (*CreateGameMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{4}
+	return fileDescriptor_types_420548650419de07, []int{3}
 }
 func (m *CreateGameMapRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateGameMapRequest.Unmarshal(m, b)
@@ -317,7 +271,7 @@ func (m *CreateGameMapResponse) Reset()         { *m = CreateGameMapResponse{} }
 func (m *CreateGameMapResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateGameMapResponse) ProtoMessage()    {}
 func (*CreateGameMapResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{5}
+	return fileDescriptor_types_420548650419de07, []int{4}
 }
 func (m *CreateGameMapResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateGameMapResponse.Unmarshal(m, b)
@@ -359,9 +313,9 @@ func (m *CreateGameMapResponse) GetMap() *GameMap {
 }
 
 type Challenge struct {
-	ChanllengeId         int64    `protobuf:"varint,1,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
+	ChanllengeId         string   `protobuf:"bytes,1,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
 	Player               *User    `protobuf:"bytes,2,opt,name=player,proto3" json:"player,omitempty"`
-	Mapid                int32    `protobuf:"varint,3,opt,name=mapid,proto3" json:"mapid,omitempty"`
+	MapId                string   `protobuf:"bytes,3,opt,name=map_id,json=mapId,proto3" json:"map_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -371,7 +325,7 @@ func (m *Challenge) Reset()         { *m = Challenge{} }
 func (m *Challenge) String() string { return proto.CompactTextString(m) }
 func (*Challenge) ProtoMessage()    {}
 func (*Challenge) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{6}
+	return fileDescriptor_types_420548650419de07, []int{5}
 }
 func (m *Challenge) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Challenge.Unmarshal(m, b)
@@ -391,11 +345,11 @@ func (m *Challenge) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Challenge proto.InternalMessageInfo
 
-func (m *Challenge) GetChanllengeId() int64 {
+func (m *Challenge) GetChanllengeId() string {
 	if m != nil {
 		return m.ChanllengeId
 	}
-	return 0
+	return ""
 }
 
 func (m *Challenge) GetPlayer() *User {
@@ -405,16 +359,16 @@ func (m *Challenge) GetPlayer() *User {
 	return nil
 }
 
-func (m *Challenge) GetMapid() int32 {
+func (m *Challenge) GetMapId() string {
 	if m != nil {
-		return m.Mapid
+		return m.MapId
 	}
-	return 0
+	return ""
 }
 
 type ChallengeRequest struct {
 	Player               *User    `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
-	MapId                int32    `protobuf:"varint,2,opt,name=map_id,json=mapId,proto3" json:"map_id,omitempty"`
+	MapId                string   `protobuf:"bytes,2,opt,name=map_id,json=mapId,proto3" json:"map_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -424,7 +378,7 @@ func (m *ChallengeRequest) Reset()         { *m = ChallengeRequest{} }
 func (m *ChallengeRequest) String() string { return proto.CompactTextString(m) }
 func (*ChallengeRequest) ProtoMessage()    {}
 func (*ChallengeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{7}
+	return fileDescriptor_types_420548650419de07, []int{6}
 }
 func (m *ChallengeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ChallengeRequest.Unmarshal(m, b)
@@ -451,17 +405,17 @@ func (m *ChallengeRequest) GetPlayer() *User {
 	return nil
 }
 
-func (m *ChallengeRequest) GetMapId() int32 {
+func (m *ChallengeRequest) GetMapId() string {
 	if m != nil {
 		return m.MapId
 	}
-	return 0
+	return ""
 }
 
 type ChallengeResponse struct {
 	Code                 int32    `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	ChanllengeId         int64    `protobuf:"varint,3,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
+	ChanllengeId         string   `protobuf:"bytes,3,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -471,7 +425,7 @@ func (m *ChallengeResponse) Reset()         { *m = ChallengeResponse{} }
 func (m *ChallengeResponse) String() string { return proto.CompactTextString(m) }
 func (*ChallengeResponse) ProtoMessage()    {}
 func (*ChallengeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{8}
+	return fileDescriptor_types_420548650419de07, []int{7}
 }
 func (m *ChallengeResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ChallengeResponse.Unmarshal(m, b)
@@ -505,11 +459,11 @@ func (m *ChallengeResponse) GetMessage() string {
 	return ""
 }
 
-func (m *ChallengeResponse) GetChanllengeId() int64 {
+func (m *ChallengeResponse) GetChanllengeId() string {
 	if m != nil {
 		return m.ChanllengeId
 	}
-	return 0
+	return ""
 }
 
 type ListGameMapRequest struct {
@@ -522,7 +476,7 @@ func (m *ListGameMapRequest) Reset()         { *m = ListGameMapRequest{} }
 func (m *ListGameMapRequest) String() string { return proto.CompactTextString(m) }
 func (*ListGameMapRequest) ProtoMessage()    {}
 func (*ListGameMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{9}
+	return fileDescriptor_types_420548650419de07, []int{8}
 }
 func (m *ListGameMapRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListGameMapRequest.Unmarshal(m, b)
@@ -543,17 +497,17 @@ func (m *ListGameMapRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ListGameMapRequest proto.InternalMessageInfo
 
 type ListGameMapResponse struct {
-	MapList              *MapList `protobuf:"bytes,1,opt,name=map_list,json=mapList,proto3" json:"map_list,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Maps                 []*GameMap `protobuf:"bytes,1,rep,name=maps,proto3" json:"maps,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
 }
 
 func (m *ListGameMapResponse) Reset()         { *m = ListGameMapResponse{} }
 func (m *ListGameMapResponse) String() string { return proto.CompactTextString(m) }
 func (*ListGameMapResponse) ProtoMessage()    {}
 func (*ListGameMapResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{10}
+	return fileDescriptor_types_420548650419de07, []int{9}
 }
 func (m *ListGameMapResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListGameMapResponse.Unmarshal(m, b)
@@ -573,9 +527,9 @@ func (m *ListGameMapResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ListGameMapResponse proto.InternalMessageInfo
 
-func (m *ListGameMapResponse) GetMapList() *MapList {
+func (m *ListGameMapResponse) GetMaps() []*GameMap {
 	if m != nil {
-		return m.MapList
+		return m.Maps
 	}
 	return nil
 }
@@ -583,7 +537,7 @@ func (m *ListGameMapResponse) GetMapList() *MapList {
 type UploadChallengeResultRequest struct {
 	Result               bool     `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	Player               *User    `protobuf:"bytes,2,opt,name=player,proto3" json:"player,omitempty"`
-	ChanllengeId         int64    `protobuf:"varint,3,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
+	ChanllengeId         string   `protobuf:"bytes,3,opt,name=chanllenge_id,json=chanllengeId,proto3" json:"chanllenge_id,omitempty"`
 	LastPoint            *Point   `protobuf:"bytes,4,opt,name=last_point,json=lastPoint,proto3" json:"last_point,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -594,7 +548,7 @@ func (m *UploadChallengeResultRequest) Reset()         { *m = UploadChallengeRes
 func (m *UploadChallengeResultRequest) String() string { return proto.CompactTextString(m) }
 func (*UploadChallengeResultRequest) ProtoMessage()    {}
 func (*UploadChallengeResultRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_types_cda08e84d3cf9ba6, []int{11}
+	return fileDescriptor_types_420548650419de07, []int{10}
 }
 func (m *UploadChallengeResultRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UploadChallengeResultRequest.Unmarshal(m, b)
@@ -628,11 +582,11 @@ func (m *UploadChallengeResultRequest) GetPlayer() *User {
 	return nil
 }
 
-func (m *UploadChallengeResultRequest) GetChanllengeId() int64 {
+func (m *UploadChallengeResultRequest) GetChanllengeId() string {
 	if m != nil {
 		return m.ChanllengeId
 	}
-	return 0
+	return ""
 }
 
 func (m *UploadChallengeResultRequest) GetLastPoint() *Point {
@@ -646,7 +600,6 @@ func init() {
 	proto.RegisterType((*User)(nil), "User")
 	proto.RegisterType((*Point)(nil), "Point")
 	proto.RegisterType((*GameMap)(nil), "GameMap")
-	proto.RegisterType((*MapList)(nil), "MapList")
 	proto.RegisterType((*CreateGameMapRequest)(nil), "CreateGameMapRequest")
 	proto.RegisterType((*CreateGameMapResponse)(nil), "CreateGameMapResponse")
 	proto.RegisterType((*Challenge)(nil), "Challenge")
@@ -657,41 +610,38 @@ func init() {
 	proto.RegisterType((*UploadChallengeResultRequest)(nil), "UploadChallengeResultRequest")
 }
 
-func init() { proto.RegisterFile("types.proto", fileDescriptor_types_cda08e84d3cf9ba6) }
+func init() { proto.RegisterFile("types.proto", fileDescriptor_types_420548650419de07) }
 
-var fileDescriptor_types_cda08e84d3cf9ba6 = []byte{
-	// 519 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0xe5, 0xf8, 0x33, 0x93, 0x22, 0x95, 0x25, 0x41, 0x56, 0x54, 0x44, 0xb4, 0x15, 0x22,
-	0xa7, 0x1c, 0x8a, 0xb8, 0x20, 0x2e, 0xa8, 0x07, 0xa8, 0x44, 0x25, 0xb4, 0x52, 0xcf, 0xd1, 0x34,
-	0x9e, 0x24, 0x96, 0xfc, 0xb1, 0x78, 0x37, 0x34, 0x79, 0x1c, 0xde, 0x87, 0x87, 0x42, 0xbb, 0xb6,
-	0xe3, 0x84, 0x46, 0x80, 0x7a, 0x9b, 0xff, 0x3f, 0x99, 0x19, 0xff, 0x66, 0xc6, 0x86, 0x81, 0xde,
-	0x49, 0x52, 0x33, 0x59, 0x95, 0xba, 0xe4, 0x1f, 0xc1, 0xbb, 0x53, 0x54, 0xb1, 0x31, 0x44, 0x1b,
-	0x45, 0x55, 0x81, 0x39, 0xc5, 0xce, 0xc4, 0x99, 0xf6, 0xc5, 0x5e, 0xb3, 0x18, 0xc2, 0x7b, 0xcc,
-	0xb0, 0x58, 0x50, 0xdc, 0x9b, 0x38, 0x53, 0x57, 0xb4, 0x92, 0xbf, 0x07, 0xff, 0x5b, 0x99, 0x16,
-	0x9a, 0x8d, 0x20, 0xd8, 0xce, 0x71, 0x9b, 0x2a, 0x9b, 0xec, 0x0b, 0x7f, 0xfb, 0x69, 0x9b, 0x2a,
-	0x63, 0xef, 0x6a, 0xbb, 0x57, 0xdb, 0x3b, 0x63, 0xf3, 0x5f, 0x0e, 0x84, 0x9f, 0x31, 0xa7, 0x5b,
-	0x94, 0xa6, 0xf8, 0x0f, 0xaa, 0x54, 0x5a, 0x16, 0x4d, 0x6a, 0x2b, 0xd9, 0x10, 0xfc, 0x1c, 0x65,
-	0x9a, 0xb4, 0xb9, 0x56, 0xb0, 0xd7, 0x10, 0x2e, 0x2a, 0x42, 0x5d, 0x56, 0xb1, 0x3b, 0x71, 0xa6,
-	0x83, 0x2b, 0x7f, 0x66, 0x00, 0x44, 0xeb, 0x9a, 0xb4, 0x55, 0x85, 0x72, 0x1d, 0x7b, 0x13, 0x67,
-	0x7a, 0x26, 0x6a, 0xc1, 0x5e, 0x42, 0x50, 0xd1, 0x03, 0x56, 0x49, 0xec, 0x5b, 0x84, 0x46, 0xb1,
-	0x73, 0x70, 0x97, 0x44, 0x71, 0x60, 0x4d, 0x13, 0x9a, 0x7c, 0xa5, 0x51, 0x53, 0x1c, 0xd6, 0x6d,
-	0xad, 0x60, 0x63, 0xf0, 0x96, 0xe5, 0x4a, 0xc5, 0xd1, 0xc4, 0x9d, 0x0e, 0xae, 0x82, 0x99, 0xc5,
-	0x16, 0xd6, 0xe3, 0x6f, 0x21, 0xbc, 0x45, 0xf9, 0x35, 0x55, 0x9a, 0x5d, 0x80, 0x97, 0xa3, 0x34,
-	0x53, 0x30, 0x7f, 0x8b, 0x66, 0x0d, 0xa5, 0xb0, 0x2e, 0x7f, 0x80, 0xe1, 0xb5, 0x79, 0x4a, 0x6a,
-	0x6d, 0xfa, 0xbe, 0x21, 0xa5, 0x0f, 0x99, 0x9c, 0xbf, 0x33, 0xf5, 0x4e, 0x33, 0xb9, 0xa7, 0x98,
-	0xbc, 0x3d, 0x13, 0x47, 0x18, 0xfd, 0xd1, 0x58, 0xc9, 0xb2, 0x50, 0xc4, 0x18, 0x78, 0x8b, 0x32,
-	0xa1, 0x66, 0xf4, 0x36, 0x36, 0x1b, 0xc9, 0x49, 0x29, 0x5c, 0xd5, 0xeb, 0xee, 0x8b, 0x56, 0xb2,
-	0x31, 0xb8, 0x39, 0xca, 0x66, 0xee, 0x1d, 0x9c, 0x31, 0x39, 0x41, 0xff, 0x7a, 0x8d, 0x59, 0x46,
-	0xc5, 0x8a, 0xd8, 0x25, 0x3c, 0x5b, 0xac, 0xb1, 0xa8, 0xd5, 0x3c, 0x4d, 0x6c, 0x7d, 0x57, 0x9c,
-	0x75, 0xe6, 0x4d, 0xc2, 0x5e, 0x41, 0x20, 0x33, 0xdc, 0x51, 0x65, 0xdb, 0xec, 0xa1, 0x1b, 0xb3,
-	0x5b, 0xbf, 0x7b, 0xb0, 0x7e, 0xfe, 0x05, 0xce, 0xf7, 0x6d, 0xda, 0xf1, 0x75, 0x85, 0x9c, 0x53,
-	0x85, 0x46, 0x10, 0xe4, 0x28, 0xe7, 0x47, 0x87, 0x74, 0x93, 0xf0, 0x25, 0x3c, 0x3f, 0xa8, 0xf4,
-	0xa4, 0x79, 0x3c, 0xc2, 0x74, 0x1f, 0x63, 0xf2, 0x21, 0x30, 0x73, 0x1a, 0xc7, 0x2b, 0xe7, 0x1f,
-	0xe0, 0xc5, 0x91, 0xdb, 0xf4, 0xbf, 0x84, 0xc8, 0x3c, 0x6b, 0x96, 0x2a, 0xdd, 0xc0, 0x44, 0xb3,
-	0xe6, 0xb6, 0x44, 0x98, 0xd7, 0x01, 0xff, 0xe9, 0xc0, 0xc5, 0x9d, 0xcc, 0x4a, 0x4c, 0x0e, 0x01,
-	0x36, 0x99, 0x6e, 0x07, 0x62, 0x0f, 0xc3, 0x18, 0xb6, 0x46, 0x24, 0x1a, 0xf5, 0xaf, 0x89, 0xff,
-	0x0f, 0x0e, 0x7b, 0x03, 0x90, 0xa1, 0xd2, 0x73, 0x69, 0x5e, 0x00, 0x7b, 0x63, 0xdd, 0xeb, 0xd0,
-	0x37, 0xbf, 0xd8, 0xf0, 0x3e, 0xb0, 0x9f, 0x97, 0x77, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xe3,
-	0xcf, 0xa6, 0xe9, 0x6d, 0x04, 0x00, 0x00,
+var fileDescriptor_types_420548650419de07 = []byte{
+	// 476 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xcd, 0x6a, 0xdb, 0x40,
+	0x10, 0xc7, 0x91, 0x57, 0x92, 0xed, 0x71, 0x0a, 0xe9, 0xd6, 0x29, 0xc2, 0xa4, 0xd4, 0x6c, 0x29,
+	0xf8, 0xe4, 0x83, 0x43, 0x6f, 0xbd, 0x94, 0x1c, 0xda, 0x40, 0x0b, 0x65, 0x21, 0x67, 0x33, 0xb1,
+	0xc6, 0xb6, 0x40, 0x1f, 0x5b, 0xed, 0x9a, 0xd8, 0x8f, 0xd3, 0x67, 0xe8, 0x0b, 0x96, 0x5d, 0x49,
+	0x96, 0x9c, 0x84, 0xb4, 0xe4, 0xb6, 0xff, 0x9f, 0xb4, 0x33, 0xff, 0xf9, 0x90, 0x60, 0x64, 0x0e,
+	0x8a, 0xf4, 0x5c, 0x95, 0x85, 0x29, 0xc4, 0x67, 0xf0, 0x6f, 0x35, 0x95, 0x7c, 0x02, 0x83, 0x9d,
+	0xa6, 0x32, 0xc7, 0x8c, 0x22, 0x6f, 0xea, 0xcd, 0x86, 0xf2, 0xa8, 0x79, 0x04, 0xfd, 0x3b, 0x4c,
+	0x31, 0x5f, 0x51, 0xd4, 0x9b, 0x7a, 0x33, 0x26, 0x1b, 0x29, 0x3e, 0x41, 0xf0, 0xb3, 0x48, 0x72,
+	0xc3, 0x2f, 0x20, 0xdc, 0x2f, 0x71, 0x9f, 0x68, 0x77, 0x39, 0x90, 0xc1, 0xfe, 0xcb, 0x3e, 0xd1,
+	0x16, 0x1f, 0x2a, 0xdc, 0xab, 0xf0, 0xc1, 0x62, 0xf1, 0xc7, 0x83, 0xfe, 0x57, 0xcc, 0xe8, 0x07,
+	0x2a, 0xfb, 0x4a, 0x86, 0x6a, 0x99, 0xc4, 0x75, 0xda, 0x20, 0x43, 0x75, 0x13, 0xf3, 0xf7, 0xd0,
+	0x5f, 0x95, 0x84, 0xa6, 0x28, 0xdd, 0xd5, 0xd1, 0x22, 0x98, 0x5b, 0x9f, 0xb2, 0xa1, 0x7c, 0x0c,
+	0xc1, 0xa6, 0x44, 0xb5, 0x8d, 0xd8, 0xd4, 0x9b, 0x9d, 0xc9, 0x4a, 0xf0, 0xb7, 0x10, 0x96, 0x74,
+	0x8f, 0x65, 0x1c, 0xf9, 0xce, 0x69, 0xad, 0xf8, 0x39, 0xb0, 0x35, 0x51, 0x14, 0x38, 0x68, 0x8f,
+	0xf6, 0xbe, 0x36, 0x68, 0x28, 0x0a, 0x2b, 0x67, 0x4e, 0xf0, 0x09, 0xf8, 0xeb, 0x62, 0xa3, 0xa3,
+	0xfe, 0x94, 0xcd, 0x46, 0x8b, 0x70, 0xee, 0xaa, 0x93, 0x8e, 0x89, 0x7b, 0x18, 0x5f, 0xdb, 0xe4,
+	0x54, 0x5b, 0x97, 0xf4, 0x6b, 0x47, 0xda, 0x74, 0xad, 0x7a, 0xcf, 0x5b, 0xed, 0x3d, 0x6d, 0x95,
+	0x3d, 0x65, 0xd5, 0x3f, 0x5a, 0x15, 0x08, 0x17, 0x0f, 0x12, 0x6b, 0x55, 0xe4, 0x9a, 0x38, 0x07,
+	0x7f, 0x55, 0xc4, 0x54, 0xf7, 0xdc, 0x9d, 0xed, 0xb0, 0x32, 0xd2, 0x1a, 0x37, 0xd5, 0xb0, 0x86,
+	0xb2, 0x91, 0x7c, 0x02, 0x2c, 0x43, 0xe5, 0xb2, 0x8d, 0x16, 0x83, 0x79, 0x13, 0xcc, 0x42, 0xb1,
+	0x86, 0xe1, 0xf5, 0x16, 0xd3, 0x94, 0xf2, 0x0d, 0xf1, 0x0f, 0xf0, 0x6a, 0xb5, 0xc5, 0xbc, 0x52,
+	0xed, 0x64, 0xce, 0x5a, 0x78, 0x13, 0xf3, 0x77, 0x10, 0xaa, 0x14, 0x0f, 0xf4, 0x60, 0x3e, 0x35,
+	0xec, 0x8c, 0x95, 0x75, 0xc6, 0x2a, 0xbe, 0xc1, 0xf9, 0x31, 0x4f, 0xd3, 0xbf, 0x36, 0x92, 0xf7,
+	0x7c, 0xa4, 0x5e, 0x37, 0xd2, 0x1a, 0x5e, 0x77, 0x22, 0xbd, 0xa8, 0x21, 0x8f, 0xea, 0x64, 0x8f,
+	0xeb, 0x14, 0x63, 0xe0, 0xdf, 0x13, 0x6d, 0x4e, 0x67, 0x2e, 0xae, 0xe0, 0xcd, 0x09, 0xad, 0xf3,
+	0x5f, 0x82, 0x9f, 0xa1, 0xb2, 0x1f, 0x01, 0x3b, 0xe9, 0xb1, 0xa3, 0xe2, 0xb7, 0x07, 0x97, 0xb7,
+	0x2a, 0x2d, 0x30, 0xee, 0x3a, 0xdf, 0xa5, 0xa6, 0xe9, 0x84, 0x5b, 0x09, 0x0b, 0x5c, 0x01, 0x03,
+	0x59, 0xab, 0x7f, 0xf5, 0xfa, 0x7f, 0xea, 0xe0, 0x1f, 0x01, 0x52, 0xd4, 0x66, 0xa9, 0xec, 0x46,
+	0xbb, 0xed, 0x6a, 0xf7, 0x7b, 0x68, 0x9f, 0xb8, 0xe3, 0x5d, 0xe8, 0x7e, 0x0b, 0x57, 0x7f, 0x03,
+	0x00, 0x00, 0xff, 0xff, 0x2b, 0x6c, 0x90, 0xe9, 0x25, 0x04, 0x00, 0x00,
 }
