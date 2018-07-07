@@ -78,9 +78,15 @@ message ListGameMapResponse {
     repeated GameMap maps = 1;
 }
 
-message UploadChallengeResultRequest {
+message ChallengeResultRequest {
     bool result = 1;
     User player = 2;
     string chanllenge_id = 3;
     Point last_point = 4;
+}
+
+message ChallengeResultResponse {
+    int32 result = 1;
+    string message = 2;
+    User player = 3;
 }
