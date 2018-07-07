@@ -5,6 +5,12 @@ message User {
     int64 balance = 2;
 }
 
+message Pixel {
+    Point point = 1;
+    int32 type = 2;
+    int32 value = 3;
+}
+
 message Point {
     int32 x_axis = 1;
     int32 y_axis = 2;
@@ -13,7 +19,7 @@ message Point {
 message GameMap {
     string map_id = 1;
     User creator = 2;
-    bytes graph = 3;
+    repeated Pixel graph = 3;
     int64 reward = 4;
     int64 fee = 5;
     int32 state = 6; // 1 unsolved 2 solved
