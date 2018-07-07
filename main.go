@@ -3,6 +3,7 @@ package main
 import (
 	"math/rand"
 
+
 	"github.com/legendtkl/game-jam/types"
 	"github.com/google/uuid"
 
@@ -93,20 +94,79 @@ func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (
 		}
 	}
 	response.Map = &gameMap
+
+	var maplist types.MapList
+	ctx.Get(e.MapListKey(), &maplist)
+	maplist.Maps = append(maplist.Maps, &gameMap)
+	ctx.Set(e.MapListKey(), &maplist)
+
 	return &response, nil
 }
 
 func (e *Game) ListGameMap(ctx contract.Context, tx *types.ListGameMapRequest) (*types.ListGameMapResponse, error) {
 	response := types.ListGameMapResponse{}
-	//var maps []types.GameMap
+	var maplist types.MapList
 
-	ctx.Get(e.MapListKey(), &response)
+	ctx.Get(e.MapListKey(), &maplist)
+	response.Maps = maplist.Maps
+
 	return &response, nil
 }
 
 func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*types.ChallengeResponse, error) {
-	response := types.ChallengeResponse{}
+	var challenge types.Challenge
+	for i := 0; i < 3; i = i+1 {
+		challenge.ChanllengeId = uuid.New().String()
+		if !ctx.Has(e.ChallengeKey(challenge)) {
+			break
+		}
+	}
+	challenge.MapId = tx.MapId
+	challenge.Player = tx.Player
+
+	var gameMap types.GameMap
+	gameMap.MapId = tx.MapId
+	ctx.Get(e.MapKey(gameMap), &gameMap)
+
+	var response types.ChallengeResponse
+
+	var player types.User
+	player.Username = tx.Player.Username
+	ctx.Get(e.UserKey(player), &player)
+
+	if (player.Balance < gameMap.Fee ) {
+		response.Code = 3001
+		response.Message = "Not Enough Coin. You Poor Man!"
+		return &response, errors.New(response.Message)
+	}
+
+	player.Balance -= gameMap.Fee
+
+	response.Code = 0
+	response.ChanllengeId = challenge.ChanllengeId
+	response.Message = "OK"
 
 	return &response, nil
 }
+
+func (e *Game) UploadChallengeResult(ctx contract.Context, tx types.UploadChallengeResultRequest) (error) {
+	var challenge types.Challenge
+	challenge.ChanllengeId = tx.ChanllengeId
+	ctx.Get(e.ChallengeKey(challenge), &challenge)
+
+	var gameMap types.GameMap
+	gameMap.MapId = challenge.MapId
+	ctx.Get(e.MapKey(gameMap), &gameMap)
+
+	var reponse
+	if gameMap.State == 2 {
+
+	}
+	if (tx.Result == true) {
+
+	}
+
+	return nil
+}
+
 var Contract plugin.Contract = contract.MakePluginContract(&Game{})

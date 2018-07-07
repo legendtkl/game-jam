@@ -70,6 +70,10 @@ message ChallengeResponse {
 message ListGameMapRequest {
 }
 
+message MapList {
+    repeated GameMap maps = 1;
+}
+
 message ListGameMapResponse {
     repeated GameMap maps = 1;
 }
