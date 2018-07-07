@@ -173,19 +173,24 @@ func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultReq
 		if err := recover(); err != nil {
 			fmt.Println(err)
 			fmt.Println(string(debug.Stack()))
+			ctx.Logger().Log(err)
+			ctx.Logger().Log(string(debug.Stack()))
 		}
 	}()
 	var challenge types.Challenge
 	challenge.ChanllengeId = tx.ChanllengeId
 	ctx.Get(e.ChallengeKey(challenge), &challenge)
+	ctx.Logger().Log("challenge:", challenge)
 
 	var gameMap types.GameMap
 	gameMap.MapId = challenge.MapId
 	ctx.Get(e.MapKey(gameMap), &gameMap)
+	ctx.Logger().Log("gamemap:", gameMap)
 
 	var player types.User
 	player.Username = tx.Player.Username
 	ctx.Get(e.UserKey(player), &player)
+	ctx.Logger().Log("player:", player)
 
 	var response types.ChallengeResultResponse
 	if gameMap.State == 2 {
@@ -193,6 +198,7 @@ func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultReq
 		response.Message = "The Map has been Challenged Successful. You CHEAT ??"
 		return &response, errors.New(response.Message)
 	}
+	ctx.Logger().Log("line 199")
 
 	if (tx.Result == true) {
 		//改 map 状态
@@ -204,6 +210,7 @@ func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultReq
 		player.Balance += gameMap.Reward
 		ctx.Set(e.UserKey(player), &player)
 	}
+	ctx.Logger().Log("line 211")
 	response.Code = 0
 	response.Player = &player
 	response.Message = "OK"
