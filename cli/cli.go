@@ -157,6 +157,7 @@ func main() {
 				Player: &types.User{Username: userName},
 				ChanllengeId: challengeId,
 				Result: result,
+				LastPoint: &types.Point{12, 34},
 			}
 			resp, err := contract.Call("UploadChallenge", params, signer, &result1)
 			fmt.Println(resp)

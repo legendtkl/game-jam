@@ -167,8 +167,8 @@ func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*typ
 
 	return &response, nil
 }
-
-func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultRequest) (*types.ChallengeResultResponse, error) {
+             //UploadChallenge
+func (e *Game) UploadChallenge(ctx contract.Context, tx *types.ChallengeResultRequest) (*types.ChallengeResultResponse, error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
