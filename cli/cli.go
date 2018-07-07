@@ -73,9 +73,9 @@ func main() {
 				log.Fatal(err)
 			}
 			var result types.CreateGameMapResponse
-			x1 := types.Pixel{nil, 12, 34}
-			x2 := types.Pixel{nil, 12, 34}
-			x3 := types.Pixel{nil, 12, 34}
+			x1 := types.Pixel{&types.Point{12,34}, 12, 34}
+			x2 := types.Pixel{&types.Point{34,56}, 12, 34}
+			x3 := types.Pixel{&types.Point{11,22}, 12, 34}
 
 			params := &types.CreateGameMapRequest{
 				Creator: &types.User{creator, 1000},
