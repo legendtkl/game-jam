@@ -158,7 +158,7 @@ func main() {
 				ChanllengeId: challengeId,
 				Result: result,
 			}
-			resp, err := contract.Call("Challenge", params, signer, &result1)
+			resp, err := contract.Call("UploadChallenge", params, signer, &result1)
 			fmt.Println(resp)
 			fmt.Println(result1)
 			return nil
