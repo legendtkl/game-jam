@@ -149,7 +149,7 @@ func (e *Game) Challenge(ctx contract.Context, tx *types.ChallengeRequest) (*typ
 	return &response, nil
 }
 
-func (e *Game) UploadChallengeResult(ctx contract.Context, tx types.UploadChallengeResultRequest) (error) {
+func (e *Game) UploadChallenge(ctx contract.Context, tx types.ChallengeResultRequest) (*types.ChallengeResultResponse, error) {
 	var challenge types.Challenge
 	challenge.ChanllengeId = tx.ChanllengeId
 	ctx.Get(e.ChallengeKey(challenge), &challenge)
@@ -158,9 +158,12 @@ func (e *Game) UploadChallengeResult(ctx contract.Context, tx types.UploadChalle
 	gameMap.MapId = challenge.MapId
 	ctx.Get(e.MapKey(gameMap), &gameMap)
 
-	var reponse
+	var response types.ChallengeResultResponse
 	if gameMap.State == 2 {
 
+		response.Code = 3002
+		response.Message = "The Map has been Challenged Successful. You CHEAT ??"
+		return &response, errors.New(response.Message)
 	}
 	if (tx.Result == true) {
 
