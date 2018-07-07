@@ -1,21 +1,22 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"strings"
+	"math/rand"
 
 	"github.com/legendtkl/game-jam/types"
 	"github.com/google/uuid"
 
-	loom "github.com/loomnetwork/go-loom"
 	"github.com/loomnetwork/go-loom/plugin"
 	contract "github.com/loomnetwork/go-loom/plugin/contractpb"
 	"github.com/pkg/errors"
-	"strconv"
+)
+
+const (
+	FogsProportion = 0.2
 )
 
 func main() {
+	rand.Seed(99)
 	plugin.Serve(Contract)
 }
 
@@ -49,118 +50,49 @@ func (e *Game) ChallengeKey(challenge types.Challenge) []byte {
 	return []byte("challenge_" + challenge.ChanllengeId)
 }
 
-func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (types.CreateGameMapResponse, error) {
-	owner := strings.TrimSpace(accTx.Owner)
-	// confirm owner doesnt exist already
-	if ctx.Has(e.ownerKey(owner)) {
-		return errors.New("Owner already exists")
+func (e* Game) CreateUser(ctx contract.Context, tx *types.CreateUserRequest) (*types.CreateUserResponse, error) {
+	var user types.User
+	var response types.CreateUserResponse
+
+	if len(tx.Username) <= 0 {
+		response.Code = 1000
+		response.Message = "invalid username"
+		return &response, errors.New(response.Message)
 	}
-	addr := []byte(ctx.Message().Sender.Local)
-	state := &types.BluePrintAppState{
-		Address: addr,
-	}
-	if err := ctx.Set(e.ownerKey(owner), state); err != nil {
-		return errors.Wrap(err, "Error setting state")
-	}
-	emitMsg := struct {
-		Owner  string
-		Method string
-		Addr   []byte
-	}{owner, "createacct", addr}
-	emitMsgJSON, err := json.Marshal(&emitMsg)
-	if err != nil {
-		log.Println("Error marshalling emit message")
-	}
-	ctx.Emit(emitMsgJSON)
-	return nil
+	user.Username = tx.Username
+	ctx.Set(e.UserKey(user), user)
+	response.User = &user
+	return &response, nil
 }
 
-func (e *BluePrint) SaveState(ctx contract.Context, tx *types.CreateGameMapRequest) (types.CreateGameMapResponse, error) {
-	owner := strings.TrimSpace(tx.Owner)
-	var curState types.BluePrintAppState
-	if err := ctx.Get(e.ownerKey(owner), &curState); err != nil {
-		return err
-	}
-	if loom.LocalAddress(curState.Address).Compare(ctx.Message().Sender.Local) != 0 {
-		return errors.New("Owner unverified")
-	}
-	curState.Blob = tx.Data
-	if err := ctx.Set(e.ownerKey(owner), &curState); err != nil {
-		return errors.Wrap(err, "Error marshaling state node")
-	}
-	emitMsg := struct {
-		Owner  string
-		Method string
-		Addr   []byte
-		Value  int64
-	}{Owner: owner, Method: "savestate", Addr: curState.Address}
-	json.Unmarshal(tx.Data, &emitMsg)
-	emitMsgJSON, err := json.Marshal(&emitMsg)
-	if err != nil {
-		log.Println("Error marshalling emit message")
-	}
-	ctx.Emit(emitMsgJSON)
+func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (*types.CreateGameMapResponse, error) {
+	var gameMap types.GameMap
+	var response types.CreateGameMapResponse
 
-	return nil
-}
-
-func (e *BluePrint) GetState(ctx contract.StaticContext, params *types.StateQueryParams) (*types.StateQueryResult, error) {
-	if ctx.Has(e.ownerKey(params.Owner)) {
-		var curState types.BluePrintAppState
-		if err := ctx.Get(e.ownerKey(params.Owner), &curState); err != nil {
-			return nil, err
+	for i := 0; i < 3; i = i+1 {
+		gameMap.MapId = uuid.New().String()
+		if !ctx.Has(e.MapKey(gameMap)) {
+			break
 		}
-		return &types.StateQueryResult{State: curState.Blob}, nil
 	}
-	return &types.StateQueryResult{}, nil
+	if ctx.Has(e.MapKey(gameMap)) {
+		response.Code = 2000
+		response.Message = "failed to generate uuid"
+		return &response, errors.New(response.Message)
+	}
+	gameMap.Creator = tx.Creator
+	gameMap.Graph = tx.Graph
+	gameMap.Fee = tx.Fee
+	gameMap.Reward = tx.Reward
+	gameMap.State = 0
+	for _, pixel := range tx.Graph {
+		rd := rand.Intn(len(tx.Graph) * int(1.0/FogsProportion))
+		if rd < len(tx.Graph) {
+			gameMap.Fogs = append(gameMap.Fogs, pixel.Point)
+		}
+	}
+	response.Map = &gameMap
+	return &response, nil
 }
 
-func (s *BluePrint) ownerKey(owner string) []byte {
-	return []byte("owner:" + owner)
-}
-
-func (e *BluePrint) SetMsg(ctx contract.Context, req *types.MapEntry) error {
-	eventData := struct {
-		Method string
-		Key    string
-		Value  string
-	}{Method: "SetMsg", Key: req.Key, Value: req.Value}
-	eventJSON, err := json.Marshal(&eventData)
-	if err != nil {
-		log.Println("Error marshalling emit message")
-	}
-	ctx.Emit(eventJSON)
-
-	return ctx.Set([]byte(req.Key), req)
-}
-
-func (e *BluePrint) SetMsgEcho(ctx contract.Context, req *types.MapEntry) (*types.MapEntry, error) {
-	eventData := struct {
-		Method string
-		Key    string
-		Value  string
-	}{Method: "SetMsgEcho", Key: req.Key, Value: req.Value}
-	eventJSON, err := json.Marshal(&eventData)
-	if err != nil {
-		log.Println("Error marshalling emit message")
-	}
-	ctx.Emit(eventJSON)
-
-	if err := ctx.Set([]byte(req.Key), req); err != nil {
-		return nil, err
-	}
-	return &types.MapEntry{
-		Key:   req.Key,
-		Value: req.Value,
-	}, nil
-}
-
-func (e *BluePrint) GetMsg(ctx contract.StaticContext, req *types.MapEntry) (*types.MapEntry, error) {
-	var result types.MapEntry
-	if err := ctx.Get([]byte(req.Key), &result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-var Contract plugin.Contract = contract.MakePluginContract(&BluePrint{})
+var Contract plugin.Contract = contract.MakePluginContract(&Game{})
