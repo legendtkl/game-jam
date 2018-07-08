@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	FogsProportion = 0.2
+	FogsProportion = 0.05
 )
 
 func main() {
