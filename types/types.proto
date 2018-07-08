@@ -25,6 +25,7 @@ message GameMap {
     int32 state = 6; // 1 unsolved 2 solved
     User solver = 7;
     repeated Point fogs = 8;
+    int64 timestamp = 9;
 }
 
 message CreateUserRequest {

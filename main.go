@@ -12,6 +12,7 @@ import (
 	"github.com/pkg/errors"
 	//"strconv"
 	"fmt"
+	"time"
 )
 
 const (
@@ -98,6 +99,7 @@ func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (
 	gameMap.Fee = tx.Fee
 	gameMap.Reward = tx.Reward
 	gameMap.State = 0
+	gameMap.Timestamp = time.Now().Unix()
 	for _, pixel := range tx.Graph {
 		rd := rand.Intn(len(tx.Graph) * int(1.0/FogsProportion))
 		if rd < len(tx.Graph) {
