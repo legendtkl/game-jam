@@ -99,7 +99,8 @@ func (e *Game) CreateMap(ctx contract.Context, tx *types.CreateGameMapRequest) (
 	gameMap.Fee = tx.Fee
 	gameMap.Reward = tx.Reward
 	gameMap.State = 0
-	gameMap.CreateDateTime = time.Now().Format("2006-01-02 15:04:05")
+	var cstZone = time.FixedZone("CST", 8*3600)
+	gameMap.CreateDateTime = time.Now().In(cstZone).Format("2006-01-02 15:04:05")
 	for _, pixel := range tx.Graph {
 		rd := rand.Intn(len(tx.Graph) * int(1.0/FogsProportion))
 		if rd < len(tx.Graph) {
